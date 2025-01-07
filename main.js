@@ -1,62 +1,78 @@
 const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events`;
 
-// add api url in a varible so i can remove the link multiple times
+// maybe add api url in a varible so i can remove the link multiple times
 
 // add input logic logic that prevents users ability to click add event with no details
 
 // I am having issues getting the new event to being added to the list
 
-function addEvent(name, description, date, location) {
-    const newEvent = { name, description, date: new Date(date), location };
-console.log(newEvent)
+// function addEvent(name, description, date, location) {
+//     const newEvent = { name, description, date: new Date(date), location };
+// console.log(newEvent)
 
-    fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events', {
+//     fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(newEvent),
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Failed to add event');
+//         }
+//         return response.json();
+//     })
+//     .then(event => {
+//     fetchEvents();
+//     renderEvents();
+// })
+//     .catch(error => {
+//         console.error('Error adding event:', error);
+//     });
+// }
+async function addEvent(name, description, date, location)  {
+    const newEvent = { name, description, date: new Date(date), location };
+    await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(newEvent),
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to add event');
-        }
-        return response.json();
-    })
-    .then(event => {
-    fetchEvents();
+   await fetchEvents();
     renderEvents();
-})
-    .catch(error => {
-        console.error('Error adding event:', error);
-    });
 }
 
 
-fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events', {
-    method: 'delete',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(addEvent),
-})
-.then(response => {
-    if (!response.ok) {
-        throw new Error('Failed to add event');
-    }
-    return response.json();
-})
-.then(newEvent => {
-events.push(newEvent);
-renderEvents();
-})
-.catch(error => {
-    console.error('Error adding event:', error);
-});
-// make a delete request to the API
+// fetch('https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events', {
+//     method: 'delete',
+//     headers: {
+//         'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(addEvent),
+// })
+// .then(response => {
+//     if (!response.ok) {
+//         throw new Error('Failed to add event');
+//     }
+//     return response.json();
+// })
+// .then(newEvent => {
+// events.push(newEvent);
+// renderEvents();
+// })
+// .catch(error => {
+//     console.error('Error adding event:', error);
+// });
 
-
-
+async function deleteEvent(id) {
+    await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events/${id}`, {
+        method: 'DELETE',
+    })
+    fetchEvents();
+    renderEvents();
+}
 
 let events = []; // this will be the array that will store my events
 
@@ -95,32 +111,48 @@ function renderEvents() {
     });
 }
 
-async function deleteEvent(id) {
-    await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events/${id}`, {
-        method: 'DELETE',
+// function fetchEvents() {
+//     fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events`)
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Failed to fetch events');
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log(data)
+//         events = data.data;
+//         renderEvents();
+//     })
+//     .catch(error => {
+//         console.error('Error fetching events:', error);
+//     });
+// }
+
+async function fetchEvents() {
+    const response = await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events`, {
+        method: `GET`,
     })
-    fetchEvents();
+const data = await response.json()
+console.log(data)
+events = data.data
     renderEvents();
 }
 
-function fetchEvents() {
-    fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events`)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to fetch events');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data)
-        events = data.data;
-        renderEvents();
-    })
-    .catch(error => {
-        console.error('Error fetching events:', error);
-    });
-}
+// async function deleteEvent(id) {
+//     await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events/${id}`, {
+//         method: 'DELETE',
+//     })
+//     fetchEvents();
+//     renderEvents();
+// }
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchEvents();
+// const fetchEvents2 = async() => {
+//     const response = await fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/2410-ftb-et-web-pt/events`);
+//     const result = await response.json();
+// }
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await fetchEvents();
 });
